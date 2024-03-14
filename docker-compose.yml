@@ -16,9 +16,11 @@ x-common-django:
     # configuration
     - ./favicon.ico:/srv/docker/volumes/geonode_plastops-statics/_data/static/geonode/img/facicon.ico
     - ./geonode/geonode/settings_override.py:/usr/src/geonode/geonode/settings_override.py
+    - ./geonode/geonode/static/mapstore/extensions/index.json:/usr/src/geonode/geonode/static/mapstore/extensions/index.json
     - ./geonode/fixtures:/usr/src/geonode/fixtures
     # contrib apps
     - ./geonode/apps/customizations:/usr/src/geonode/customizations
+    - ./geonode/apps/litter_assessment:/usr/src/geonode/litter_assessment
     - ./geonode/apps/externalapplications/externalapplications:/usr/src/geonode/externalapplications
     # volumes
     - statics:/mnt/volumes/statics
@@ -82,7 +84,7 @@ services:
       - LETSENCRYPT_MODE=disabled
       - RESOLVER=127.0.0.11
     ports:
-      - "8001:443"
+      - "8443:443"
     volumes:
       - statics:/mnt/volumes/statics
       # Link to a custom certificate here

@@ -105,6 +105,7 @@ LOGGING = {
 
 
 INSTALLED_APPS += (
+    "litter_assessment",
     "externalapplications",
     "customizations",
 )

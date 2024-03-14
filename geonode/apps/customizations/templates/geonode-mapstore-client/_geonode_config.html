@@ -186,6 +186,18 @@
                 overrideLocalConfig(localConfig, _)
             }
 
+            localConfig.plugins.dataset_viewer.push({ 
+                name: "LitterAssessmentPlugin",
+                //disableIf: "{context.get(state('gnLayerResourceData'), 'subtype') !== 'raster'}"
+            });
+    
+            // IMPORTANT!!! REMOVE AFTER DEVELOPMENT
+            // temporary changes to develop extension
+            // use absolute extensions folder path to correctly get http://localhost:8082 endpoint
+            localConfig.extensionsFolder = '';
+            // ensure that the http://localhost:8082 endpoint will not use proxy but direct requests
+            localConfig.proxyUrl.useCORS.push('http://localhost:8082');
+
             var pluginPageName = "catalogue";
             var selectedPluginName = "ResourcesGrid";
 
