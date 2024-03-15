@@ -1,8 +1,8 @@
 {
     "locale": "en-US",
     "messages": {
-        "extension": {
-            "message": "Message!"
+        "litterassessment": {
+            "title": "Litter Assessment"
         }
     }
 }

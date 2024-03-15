@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const extensionsPath = path.join(__dirname, '..', '..', 'geonode', 'static', 'mapstore', 'extensions');
+const extensionsPath = path.join(__dirname, '..', '..', '..', 'geonode', 'static', 'mapstore', 'extensions');
 // const extensionIndexPath = path.join(extensionsPath, 'index.json');
 // const extensionIndex = fs.existsSync(extensionIndexPath) ? require(extensionIndexPath) : {};
 

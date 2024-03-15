@@ -1,6 +1,7 @@
 {% extends 'geonode-mapstore-client/_geonode_config.html' %}
 {% block override_local_config %}
 <script>
+    // https://geonode.org/geonode-mapstore-client/master/tutorial-03-override-local-config.html
     (function() {
 
         // Overriding or patching a component's cfg takes place in the context_processor.
@@ -186,9 +187,21 @@
                 overrideLocalConfig(localConfig, _)
             }
 
-            localConfig.plugins.dataset_viewer.push({ 
-                name: "LitterAssessmentPlugin",
-                //disableIf: "{context.get(state('gnLayerResourceData'), 'subtype') !== 'raster'}"
+            // #######################################
+            // UI integration of litter assessment app
+
+            Object.keys(localConfig.plugins).forEach(pageName => {
+                if (["dataset_viewer"].includes(pageName)) {
+                    localConfig.plugins[pageName].forEach(plugin => {
+                        if (["ActionNavbar"].includes(plugin.name)) {
+                            plugin.cfg.leftMenuItems.push({
+                                type: "plugin",
+                                name: "LitterAssessmentPlugin",
+                                disableIf: "{context.get(state('gnResourceData'), 'subtype') !== 'raster'}"
+                            });
+                        }
+                    });
+                }
             });
     
             // IMPORTANT!!! REMOVE AFTER DEVELOPMENT
@@ -198,6 +211,50 @@
             // ensure that the http://localhost:8082 endpoint will not use proxy but direct requests
             localConfig.proxyUrl.useCORS.push('http://localhost:8082');
 
+
+            // ###########################################
+            // UI integration of external applications app
+
+            Object.keys(localConfig.plugins).forEach(pageName => {
+                if (["catalogue"].includes(pageName)) {
+                    localConfig.plugins[pageName].forEach(plugin => {
+                        if (["ResourcesGrid"].includes(plugin.name)) {
+
+                            const filtersFormItems = resourcesGridPluginFiltersFormItems
+                            filtersFormItems[0].items.push({
+                                id: "externalapplication",
+                                labelId: "externalapplications.filter",
+                                type: "filter"
+                            });
+                            localConfig.geoNodeCustomFilters = Object.assign(localConfig.geoNodeCustomFilters, {
+                                "externalapplication": {
+                                    "filter{resource_type.in}": "externalapplication"
+                                }
+                            });
+
+                            const menuItems = resourceGridPluginMenuItems
+                            menuItems[0].items.push({
+                                labelId: "externalapplications.register",
+                                value: "externalapplication",
+                                type: "link",
+                                href: "/externalapplications/create",
+                                authenticated: true,
+                                perms: [
+                                    {
+                                        "type": "user",
+                                        "value": "add_resource"
+                                    }
+                                ]
+                            });
+
+                            plugin.cfg.menuItems = menuItems;
+                            plugin.cfg.filtersFormItems = filtersFormItems
+                        }
+                    });
+                }
+            });
+            
+            {% comment %} 
             var pluginPageName = "catalogue";
             var selectedPluginName = "ResourcesGrid";
 
@@ -239,6 +296,7 @@
                     plugin.cfg.menuItems = menuItems;
                 }
             }
+            {% endcomment %}
 
             return localConfig;
         };

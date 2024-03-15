@@ -38,7 +38,8 @@
     "test:watch": "mapstore-project test:watch extension"
   },
   "devDependencies": {
-    "@mapstore/project": "1.0.27"
+    "@mapstore/project": "1.0.27",
+    "geonode-mapstore-client": "/home/ridoo/data/coding/projects/52n_geonode/geonode-mapstore-client/geonode_mapstore_client/client"
   },
   "dependencies": {
     "mapstore": "git+https://github.com/geosolutions-it/MapStore2.git#2022.02.xx"
