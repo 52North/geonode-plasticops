@@ -1,6 +1,6 @@
-version: '3.4'
 
 services:
+
   django:
     env_file:
       - .devcontainer/.env.local
