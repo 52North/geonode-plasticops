@@ -124,6 +124,5 @@ LOGGING = {
 
 
 INSTALLED_APPS += (
-    "externalapplications",
     "customizations",
 )
