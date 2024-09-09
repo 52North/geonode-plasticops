@@ -5,32 +5,34 @@
 #
 
 import os
-import sys
 import ast
+import sys
 
 
 # sets defaults settings and from .env
 from geonode.settings import *  # noqa
-from geonode.settings import (
+from geonode.settings import (  # noqa
     DEBUG,
     TEMPLATES,
     INSTALLED_APPS,
 )
 
+SITE_HOST_NAME = "PlasticObs+"
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None if DEBUG else "same-origin"
 
+
 # relax origins for geonode-mapstore-client development
-CSRF_TRUSTED_ORIGINS = (
-    ["http://172.18.0.1:8001", "http://localhost:8081"]
-    if DEBUG
-    else ast.literal_eval(os.getenv("CSRF_TRUSTED_ORIGINS", "[]"))
-)
-CORS_ALLOWED_ORIGINS = (
-    ["http://172.18.0.1:8001", "http://localhost:8081"]
-    if DEBUG
-    else ast.literal_eval(os.getenv("CORS_ALLOWED_ORIGINS", "[]"))
-)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://localhost:8001",
+    "http://localhost:8081"
+] if DEBUG else ast.literal_eval(os.getenv("CSRF_TRUSTED_ORIGINS", "[]")) # noqa
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://localhost:8001",
+    "http://localhost:8081"
+] if DEBUG else ast.literal_eval(os.getenv("CORS_ALLOWED_ORIGINS", "[]"))  # noqa
 
 
 STATIC_ROOT = "/mnt/volumes/statics/static/"
@@ -65,9 +67,7 @@ LOGGING = {
             "style": "{",
         },
     },
-    "filters": {
-        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}
-    },  # noqa
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},  # noqa
     "handlers": {
         "console": {
             "level": "WARNING",
