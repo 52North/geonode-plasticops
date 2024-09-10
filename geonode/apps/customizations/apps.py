@@ -6,32 +6,32 @@ def run_setup_hooks(*args, **kwargs):
     from django.conf import settings
     from django.urls import re_path
     from django.views.generic import TemplateView
-    from django.contrib.sites.models import Site
     from geonode.urls import urlpatterns
 
     LOCAL_ROOT = os.path.abspath(os.path.dirname(__file__))
     template_dir = os.path.join(LOCAL_ROOT, "templates")
     settings.TEMPLATES[0]["DIRS"].insert(0, template_dir)
 
-    current_site = Site.objects.get_current()
-    current_site.domain = os.getenv("SITE_HOST_NAME", "localhost")
-    current_site.save()
-
     urlpatterns += [
-        re_path(r'^legal_notice/$',
-            TemplateView.as_view(template_name='legal-notice.html'),
-            name='legal-notice'),
-        re_path(r'^accessibility/$',
-            TemplateView.as_view(template_name='accessibility.html'),
-            name='accessibility'),
+        re_path(
+            r"^legal_notice/$",
+            TemplateView.as_view(template_name="legal-notice.html"),
+            name="legal-notice",
+        ),
+        re_path(
+            r"^accessibility/$",
+            TemplateView.as_view(template_name="accessibility.html"),
+            name="accessibility",
+        ),
     ]
 
 
 class CustomizationsAppConfig(AppConfig):
-    name = 'customizations'
+    name = "customizations"
 
     def ready(self):
         super().ready()
         run_setup_hooks()
 
-default_app_config = 'customizations.CustomizationsAppConfig'
+
+default_app_config = "customizations.CustomizationsAppConfig"
