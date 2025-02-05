@@ -2,3 +2,4 @@
 	path = docker/geonode/geonode-mapstore-client
 	url = https://github.com/52North/geonode-mapstore-client
 	branch = feature/plasticops_trigger-ai-inference
+	shallow = true
