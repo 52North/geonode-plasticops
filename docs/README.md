@@ -1,0 +1,32 @@
+# Workflow Overview
+
+- (optional) Using Project Group
+  - Become user with admin permissions
+  - [Create a GeoNode group](http://172.18.0.1:8001/groups/create/)
+  - [Attach permission to group](http://172.18.0.1:8001/en-us/admin/auth/group/): `Can Trigger AI Inference`
+- Assign group to user
+  - (optional) [Create a new user](http://172.18.0.1:8001/en-us/admin/people/profile/add/)
+    - Check checkbox `Staff status` and assign user to `ai-inference` group
+  - Alternatively: Assign admin user to `ai-inference` group
+- Upload raster datasets
+  - Become user which will be the dataset owner
+  - Go to [upload page](http://localhost:8081/catalogue/#/upload/dataset) via `Add datasets`
+- Assign project group
+  - (optional) Batch assign project group to datasets
+    - Become user with admin permissions
+    - Select datasets for [batch edit](http://172.18.0.1:8001/en-us/admin/layers/dataset/)
+    - Select `Metadata batch edit` from dropdown box on the bottom left
+    - Click `Go` to get to `Batch edit` form
+    - Select project group from `Group` drop down
+    - Click on `Submit` buttom
+  - (optional) Per dataset assign project group to dataset
+    - On a dataset click `View`
+    - Click `Edit` --> `Edit Metadata`
+    - Select group from `Group` autosuggest field
+    - Click `Update` to save dataset
+- Trigger AI Inference
+  - On a dataset click `View`
+  - Click on `Litter Assessment` button (shown only when appropriate permissions have been set, as described above)
+  - Select an inference model and adjust parameters
+  - Click on `Submit`
+  - When ready, the result will be uploaded to GeoNode and linked to the original input raster
