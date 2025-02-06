@@ -7,6 +7,9 @@
       "pk": {
         "ui:widget": "hidden"
       },
+      "title": {
+        "ui:widget": "hidden"
+      },
       "output_type": {
         "ui:widget": "hidden"
       },
@@ -19,6 +22,9 @@
         "ui:widget": "hidden"
       },
       "pk": {
+        "ui:widget": "hidden"
+      },
+      "title": {
         "ui:widget": "hidden"
       },
       "output_type": {
@@ -35,6 +41,9 @@
       "pk": {
         "ui:widget": "hidden"
       },
+      "title": {
+        "ui:widget": "hidden"
+      },
       "output_type": {
         "ui:widget": "hidden"
       },
@@ -47,6 +56,9 @@
         "ui:widget": "hidden"
       },
       "pk": {
+        "ui:widget": "hidden"
+      },
+      "title": {
         "ui:widget": "hidden"
       }
     }
