@@ -1,5 +1,6 @@
 import json
 import logging
+import asyncio
 
 from django.shortcuts import render
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.http import (
 from geonode.base.models import ResourceBase
 from geonode.base.auth import get_or_create_token
 from geonode.base.views import get_url_for_model
+from geonode.resource.models import ExecutionRequest
 from geonode.layers.models import Dataset
 from geonode.utils import http_client
 
@@ -22,7 +24,7 @@ from oauth2_provider.contrib import rest_framework
 
 from litterassessment.models import Inference
 from litterassessment.forms import TriggerAiInferenceForm
-from litterassessment.tasks import batch_trigger_inferences
+from litterassessment.tasks import background_trigger_inference
 from litterassessment.permissions import CanTriggerInferencePermissions
 from litterassessment.apps import LITTERASSESSMENT_MODEL_API
 
@@ -53,11 +55,11 @@ def _forward(method, path, headers={}, data=None):
         logger.warning(f"Could not process request! -> {content}")
         return HttpResponseServerError("Error processing request.")
 
-def _trigger_inference(request, path, payload, resource):
+def _trigger_inference(user, path, payload, resource):
     
     inference = Inference.objects.create(payload=payload, resource=resource)
     inference.group_id = payload["inferenceGroup"] if "inferenceGroup" in payload else None
-    inference.initiator = request.user
+    inference.initiator = user
     inference.save()
 
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -128,7 +130,7 @@ class ForwardToInferenceApi(APIView):
         # data = json.dumps(payload)
         # response = _forward("POST", path, headers=headers, data=data)
         
-        job = _trigger_inference(request, path, payload, resource)
+        job = _trigger_inference(request.user, path, payload, resource)
 
         if not job:
             return JsonResponse(data={
@@ -170,7 +172,25 @@ class BatchInferenceApi(APIView):
 
                 access_token = get_or_create_token(request.user)
                 resources = Dataset.objects.filter(id__in=ids.split(","))
-                batch_trigger_inferences.delay(resources, access_token)
+                
+                for resource in resources:
+                    wms_url = resource.link_set.filter(name="PNG")[0].url
+                    # _trigger_inference(request.user, f"models/{model}/", {
+                    #     "pk": str(resource.pk),
+                    #     "title": resource.title,
+                    #     "imageUrl": f"{wms_url}&access_token={access_token}",
+                    # }, resource)
+                    exec = ExecutionRequest.objects.create(
+                        user=request.user,
+                        geonode_resource=resource,
+                        func_name=_trigger_inference,
+                        input_params={
+                            "model": model,
+                            "wms_url": wms_url,
+                            "access_token": str(access_token)
+                        }
+                    )
+                    background_trigger_inference.delay(exec.exec_id)
                 
                 return HttpResponseRedirect("/inferences")
 

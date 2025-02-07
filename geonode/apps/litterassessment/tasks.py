@@ -2,6 +2,7 @@ import json
 import logging
 
 from django.utils import timezone
+from geonode.resource.models import ExecutionRequest
 from geonode.utils import http_client
 from geonode.celery_app import app
 
@@ -17,19 +18,28 @@ POLLABLE_STATES = [
 ]
 
 @app.task(queue=QUEUE)
-def batch_trigger_inferences(request, model, resources, access_token):
+def background_trigger_inference(exec_id: str):
     from litterassessment.views import _trigger_inference
-    for resource in resources:
-        wms_url = resource.link_set.filter(name="PNG")[0].url
-        job = _trigger_inference(
-            request,
-            path=f"models/{model}/",
-            payload={
-                "pk": str(resource.pk),
-                "title": resource.title,
-                "imageUrl": f"{wms_url}&access_token={access_token}"
-            },
-            resource=resource)
+    _exec = ExecutionRequest.objects.filter(exec_id=exec_id)
+    if not _exec.exists():
+        logger.error(f"Execution request '{exec_id}' not found")
+        return
+    execution_request = _exec.first()
+    input_params = execution_request.input_params
+    
+    resource = execution_request.geonode_resource
+    access_token = input_params["access_token"]
+    wms_url = input_params["wms_url"]
+    model = input_params["model"]
+    job = _trigger_inference(
+        execution_request.user,
+        path=f"models/{model}/",
+        payload={
+            "pk": str(resource.pk),
+            "title": resource.title,
+            "imageUrl": f"{wms_url}&access_token={access_token}"
+        },
+        resource=resource)
 
 @app.task(queue=QUEUE)
 def poll_inference_status():
@@ -65,3 +75,4 @@ def poll_inference_status():
             logging.error(f"Error polling inference status of '{inference.job_url}'")
         
         inference.save()
+        
