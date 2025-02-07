@@ -9,12 +9,6 @@
       },
       "title": {
         "ui:widget": "hidden"
-      },
-      "output_type": {
-        "ui:widget": "hidden"
-      },
-      "generate_plot": {
-        "ui:widget": "radio"
       }
     },
     "maskrcnn_resnet50": {
@@ -26,12 +20,6 @@
       },
       "title": {
         "ui:widget": "hidden"
-      },
-      "output_type": {
-        "ui:widget": "hidden"
-      },
-      "generate_plot": {
-        "ui:widget": "radio"
       }
     },
     "festival_pld": {
@@ -43,12 +31,6 @@
       },
       "title": {
         "ui:widget": "hidden"
-      },
-      "output_type": {
-        "ui:widget": "hidden"
-      },
-      "generate_plot": {
-        "ui:widget": "radio"
       }
     },
     "vis_ai": {
