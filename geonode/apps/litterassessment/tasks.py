@@ -1,7 +1,10 @@
-import json
 import logging
 
+from django.core.mail import send_mail
+from django.template.loader import get_template
 from django.utils import timezone
+from django.conf import settings
+
 from geonode.resource.models import ExecutionRequest
 from geonode.utils import http_client
 from geonode.celery_app import app
@@ -52,9 +55,25 @@ def poll_inference_status():
             continue
         
         response, _ = http_client.get(url)
+        if response is None:
+            raise Exception("Failed to access inference REST API")
         inference.updated = timezone.now()
         
+        resource = inference.resource
+        url = resource.get_absolute_url()
+        profile = inference.initiator
+        
         if response.status_code == 404:
+            if profile.email and inference.status in POLLABLE_STATES:
+                subject = "Your inference job got deleted"
+                template = get_template("litterassessment/email_job-deleted.txt")
+                mail_body = template.render({"url": url})
+                send_mail(
+                    subject=subject,
+                    message=mail_body,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=(profile.email,)
+                )
             inference.status = Inference.Status.DELETED
         elif response:
             content = response.json()
@@ -64,6 +83,16 @@ def poll_inference_status():
             try:
                 inference_status = Inference.Status[status.upper()]
                 if not inference_status in POLLABLE_STATES:
+                    if profile.email:
+                        subject = "Your inference job has finished"
+                        template = get_template("litterassessment/email_job-finished.txt")
+                        mail_body = template.render({"url": url, "status": status})
+                        send_mail(
+                            subject=subject,
+                            message=mail_body,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=(profile.email,)
+                        )
                     inference.finish(inference_status, message)
                 else:
                     inference.status = inference_status

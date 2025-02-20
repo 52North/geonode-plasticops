@@ -1,0 +1,12 @@
+Dear Madam/Sir,
+
+An inference job your triggered has finished. The status of your
+job is: {{ status }}. You can open the resource at
+
+  {{ url }}
+{% if status == 'COMPLETE' %}
+Results have been uploaded to GeoNode and can be found under the Linked Resources.
+{% endif %}
+Sincerly, yours
+
+  PlasticObs+ Team

@@ -1,0 +1,21 @@
+Dear Madam/Sir,
+
+Unfortunately your inference job got deleted before completion. The deleted 
+job run an inference on resource
+
+  {{ url }}
+
+The deletion may have several reasons:
+
+- the inference engine crashed
+- the inference engine has been restarted
+- the server has been restarted
+
+Please note, that the development of the inference engine is at an early stage
+and does not offer any persistence or rescheduling of interrupted jobs.
+
+Tracking the inference job has been stopped and marked as DELETED.
+
+Apologies for any inconvenience.
+
+  The PlasticObs+ Team

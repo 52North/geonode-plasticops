@@ -1,0 +1,42 @@
+{% load i18n %}
+<p>{% blocktrans %}Dear Sir/Madam,{% endblocktrans %}</p>
+<p>
+  {% blocktrans %}
+  Unfortunately your inference job got deleted before completion.
+  The deleted job run an inference on resource:
+  {% endblocktrans %}
+</p>
+
+<a href="{{url}}">{% url %}</a>
+
+<p>
+    {% blocktrans %}
+    The deletion may have several reasons:
+    <ul>
+      <li>the inference engine crashed</li>
+      <li>the inference engine has been restarted</li>
+      <li>the server has been restarted</li>
+    </ul>
+    {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}
+  Please note, that the development of the inference engine is at an early stage
+  and does not offer any persistence or rescheduling of interrupted jobs.
+  {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}
+  Tracking the inference job has been stopped and marked as DELETED.
+  {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}
+  Apologies for any inconvenience.
+  {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}
+  The PlasticObs+ Team
+  {% endblocktrans %}
+</p>
