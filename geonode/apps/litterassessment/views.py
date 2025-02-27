@@ -11,6 +11,7 @@ from django.http import (
 )
 
 from geonode.base.models import ResourceBase
+from django.contrib.auth.models import Group
 from geonode.base.auth import get_or_create_token
 from geonode.base.views import get_url_for_model
 from geonode.resource.models import ExecutionRequest
@@ -58,7 +59,9 @@ def _forward(method, path, headers={}, data=None):
 def _trigger_inference(user, path, payload, resource):
     
     inference = Inference.objects.create(payload=payload, resource=resource)
-    inference.group_id = payload["inferenceGroup"] if "inferenceGroup" in payload else None
+    if "inferenceGroup" in payload:
+        group = Group.objects.filter(pk=payload["inferenceGroup"]).first()
+        inference.group = group.profile.group
     inference.initiator = user
     inference.save()
 
