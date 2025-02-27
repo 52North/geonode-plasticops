@@ -68,12 +68,15 @@ def poll_inference_status():
                 subject = "Your inference job got deleted"
                 template = get_template("litterassessment/email_job-deleted.txt")
                 mail_body = template.render({"url": url})
-                send_mail(
-                    subject=subject,
-                    message=mail_body,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=(profile.email,)
-                )
+                try:
+                    send_mail(
+                        subject=subject,
+                        message=mail_body,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=(profile.email,)
+                    )
+                except Exception as e:
+                    logging.exception("Could not send email to recipient.")
             inference.status = Inference.Status.DELETED
         elif response:
             content = response.json()
@@ -87,12 +90,15 @@ def poll_inference_status():
                         subject = "Your inference job has finished"
                         template = get_template("litterassessment/email_job-finished.txt")
                         mail_body = template.render({"url": url, "status": status})
-                        send_mail(
-                            subject=subject,
-                            message=mail_body,
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=(profile.email,)
-                        )
+                        try:
+                            send_mail(
+                                subject=subject,
+                                message=mail_body,
+                                from_email=settings.DEFAULT_FROM_EMAIL,
+                                recipient_list=(profile.email,)
+                            )
+                        except Exception as e:
+                            logging.exception("Could not send email to recipient.")
                     inference.finish(inference_status, message)
                 else:
                     inference.status = inference_status
