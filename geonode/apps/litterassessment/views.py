@@ -1,6 +1,5 @@
 import json
 import logging
-import asyncio
 
 from django.shortcuts import render
 from django.conf import settings
@@ -61,7 +60,7 @@ def _trigger_inference(user, path, payload, resource):
     inference = Inference.objects.create(payload=payload, resource=resource)
     if "inferenceGroup" in payload:
         group = Group.objects.filter(pk=payload["inferenceGroup"]).first()
-        inference.group = group.profile.group
+        inference.group = group.profile
     inference.initiator = user
     inference.save()
 
@@ -195,6 +194,7 @@ class BatchInferenceApi(APIView):
                     )
                     background_trigger_inference.delay(exec.exec_id)
                 
+                # redirect("inferences")
                 return HttpResponseRedirect("/inferences")
 
             return render(
