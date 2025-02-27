@@ -31,7 +31,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ("auth", "__latest__"),
         ("groups", "__latest__"),
-        # ("contenttypes", "__latest__"),
         ("litterassessment", "0001_initial"),
     ]
 

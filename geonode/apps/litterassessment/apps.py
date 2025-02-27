@@ -9,7 +9,6 @@ LITTERASSESSMENT_MODEL_API = "LITTERASSESSMENT_MODEL_API"
 def run_setup_hooks(*args, **kwargs):
     from django.conf import settings
     from geonode.urls import urlpatterns
-    from litterassessment.models import PermissionsModel
 
     if not settings.LITTERASSESSMENT_MODEL_API:
         setattr(
